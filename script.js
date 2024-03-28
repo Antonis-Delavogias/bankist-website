@@ -33,6 +33,7 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
+// Smooth scrolling
 const btnScrollTo = document.querySelector(".btn--scroll-to");
 const section1 = document.querySelector("#section--1");
 
@@ -52,6 +53,7 @@ document.querySelector(".nav__links").addEventListener("click", function (e) {
   }
 });
 
+// Operations section
 tabsContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".operations__tab");
   console.log(e.target);
@@ -71,6 +73,7 @@ tabsContainer.addEventListener("click", function (e) {
     .classList.add("operations__content--active");
 });
 
+// Navbar hover
 const handleHover = function (e) {
   if (e.target.classList.contains("nav__link")) {
     const link = e.target;
@@ -88,3 +91,23 @@ const handleHover = function (e) {
 nav.addEventListener("mouseover", handleHover.bind(0.5));
 
 nav.addEventListener("mouseout", handleHover.bind(1));
+
+// Sticky navigation bar
+const header = document.querySelector(".header");
+const navHeight = nav.getBoundingClientRect().height;
+console.log(navHeight);
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) nav.classList.add("sticky");
+  else nav.classList.remove("sticky");
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+
+headerObserver.observe(header);
