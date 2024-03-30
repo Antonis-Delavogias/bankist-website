@@ -160,44 +160,227 @@ const imgObserver = new IntersectionObserver(loadImg, {
 imgTargets.forEach((img) => imgObserver.observe(img));
 
 // Slider
-const slides = document.querySelectorAll(".slide");
-const btnLeft = document.querySelector(".slider__btn--left");
-const btnRight = document.querySelector(".slider__btn--right");
+const slider = function () {
+  const slides = document.querySelectorAll(".slide");
+  const btnLeft = document.querySelector(".slider__btn--left");
+  const btnRight = document.querySelector(".slider__btn--right");
+  const dotContainer = document.querySelector(".dots");
 
-let curSlide = 0;
-const maxSlide = slides.length; // the length of the node list of slides
+  let curSlide = 0;
+  const maxSlide = slides.length; // the length of the node list of slides
 
-const goToSlide = function (slide) {
-  slides.forEach(
-    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
-  );
+  // Functions
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        "beforeend",
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  const activateDot = function (slide) {
+    document
+      .querySelectorAll(".dots__dot")
+      .forEach((dot) => dot.classList.remove("dots__dot--active"));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add("dots__dot--active");
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  // Next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) curSlide = maxSlide - 1;
+    else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const init = function () {
+    goToSlide(0);
+    createDots();
+    activateDot(0);
+  };
+  init();
+
+  // Event handlers
+  btnRight.addEventListener("click", nextSlide);
+  btnLeft.addEventListener("click", prevSlide);
+
+  // Arrow keys
+  document.addEventListener("keydown", function (e) {
+    e.key === "ArrowLeft" && prevSlide();
+    e.key === "ArrowRight" && nextSlide();
+  });
+
+  // Dots pressing with click- event delegation
+  dotContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("dots__dot")) {
+      const { slide } = e.target.dataset; // destructuring the slide from dataset
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
 };
-goToSlide(0);
+slider();
 
-// Next slide
-const nextSlide = function () {
-  if (curSlide === maxSlide - 1) {
-    curSlide = 0;
-  } else {
-    curSlide++;
-  }
+// const initialCoords = section1.getBoundingClientRect();
+// console.log(initialCoords);
+// window.addEventListener("scroll", function (e) {
+//   console.log(window.scrollY);
 
-  goToSlide(curSlide);
-};
+//   if (this.window.scrollY > initialCoords.top) nav.classList.add("sticky");
+//   else nav.classList.remove("sticky");
+// });
 
-const prevSlide = function () {
-  if (curSlide === 0) curSlide = maxSlide - 1;
-  else {
-    curSlide--;
-  }
-  goToSlide(curSlide);
-};
+//
+/*
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
 
-btnRight.addEventListener("click", nextSlide);
-btnLeft.addEventListener("click", prevSlide);
+//Selecting elements
+console.log(document.documentElement);
+console.log(document.head);
+console.log(document.body);
 
-// Arrow keys
-document.addEventListener("keydown", function (e) {
-  e.key === "ArrowLeft" && prevSlide();
-  e.key === "ArrowRight" && nextSlide();
+const header = document.querySelector(".header");
+const allSections = document.querySelectorAll(".section");
+console.log(allSections); //Returns a nodelist
+
+document.getElementById("section--1");
+const allButtons = document.getElementsByTagName("button");
+console.log(allButtons); //Returns an HTML collection
+
+console.log(document.getElementsByClassName("btn"));
+
+// Creating and inserting elements
+// .insertAdjacentHTML
+
+const message = document.createElement("div");
+message.classList.add("cookie-message");
+// message.textContent =
+// "We use cookies for improved functionality and analytics.";
+message.innerHTML =
+  'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
+// header.prepend(message);
+header.append(message);
+// header.append(message.cloneNode(true)); // we get both of them , since they can exist only once
+// header.before(message); // before exactly the header
+// header.after(message);  // after the header
+
+// Delete Elements
+document
+  .querySelector(".btn--close-cookie")
+  .addEventListener("click", function () {
+    message.remove();
+    // message.parentElement.removeChild(message); // selecting the parent element is called dom traversing
+  });
+
+// Styles
+message.style.backgroundColor = "#37383d";
+message.style.width = "120%";
+
+console.log(message.style.backgroundColor); // we cant get the code we have in CSS, only the code we write in javascript
+//Unless we use a function
+console.log(getComputedStyle(message).height);
+
+message.style.height =
+  Number.parseFloat(getComputedStyle(message).height, 10) + 40 + "px";
+
+// document.documentElement.style.setProperty("--color-primary", "orangered");
+
+//Attributes
+const logo = document.querySelector(".nav__logo");
+console.log(logo.src);
+console.log(logo.getAttribute("src"));
+
+console.log(logo.alt);
+console.log(logo.className);
+
+logo.alt = "Beautiful minimalist logo";
+//Non Standar
+// console.log(logo.getAttribute('designer'));
+logo.setAttribute("company", "Bankist");
+
+const link = document.querySelector(".nav__link--btn");
+console.log(link.href);
+console.log(link.getAttribute("href"));
+
+// Data attributes
+console.log(logo.dataset.versionNumber);
+
+// Classes (can add multiple classes)
+logo.classList.add("c", "j");
+logo.classList.remove("c", "j");
+logo.classList.toggle("c", "j");
+logo.classList.contains("c", "j"); // not includes
+
+// Don't use
+// logo.className = "jonas";
+
+
+// const h1 = document.querySelector("h1");
+
+// const alertH1 = function (e) {
+//   alert("addEventListener: Great! You are reading the heading");
+
+//   // h1.removeEventListener("mouseenter", alertH1);
+// };
+// h1.addEventListener("mouseenter", alertH1);
+// setTimeout(() => h1.removeEventListener("mouseenter", alertH1), 3000);
+//   "mouseenter",
+
+//Old school
+// h1.onmouseenter = function (e) {
+//   alert("addEventListener: Great! You are reading the heading");
+// };
+
+const h1 = document.querySelector("h1");
+
+// going downwards: child
+console.log(h1.querySelectorAll(".highlight"));
+
+//direct children
+console.log(h1.childNodes);
+console.log(h1.children);
+
+//first and last
+h1.firstElementChild.style.color = "blue";
+h1.lastElementChild.style.color = "orangered";
+
+//going upwards: parents
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+// if we have many elements having the same name for example
+h1.closest(".header").style.background = "orange";
+
+// Going sideways: siblings
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = "scale(0.5)";
 });
+*/
