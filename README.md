@@ -14,7 +14,7 @@
   
 # What I Learned:
 
-*DOM Manipulation: Selecting, creating, and updating elements on the webpage for tasks like displaying transactions, user balances, and login forms.
+* DOM Manipulation: Selecting, creating, and updating elements on the webpage for tasks like displaying transactions, user balances, and login forms.
 
 * Event Handling: Reacting to user actions (e.g., button clicks, form submissions) and handling the corresponding UI updates and data changes.
 
